@@ -1,0 +1,22 @@
+.product-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    padding: 30px 20px;
+}
+
+.product-card .card__image{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.product-card img{
+    width: 200px;
+}
+
+.product-card .card__title{
+    text-align: center;
+}
