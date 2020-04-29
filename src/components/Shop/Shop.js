@@ -1,59 +1,62 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-
-import './shop.css';
-
-import ShopService from '../../services/ShopService';
-import Header from '../Header/Header';
-import ProductCard from '../ProductCard/ProductCard';
+import React, { Component } from "react";
+import ShopService from "../../services/ShopService";
+import Header from "../Header/Header";
+import ProductCard from "../ProductCard/ProductCard";
+import "./shop.scss";
 
 export default class Shop extends Component {
-
     state = {
         products: [],
     };
 
     ShopService = new ShopService();
 
-    componentDidMount(){
+    componentDidMount() {
         this.ShopService.getProducts()
-        .then(this.isDataLoaded)
-        .catch();
+            .then(this.isDataLoaded)
+            .catch();
     }
 
-    isDataLoaded = (products)=>{
+    isDataLoaded = (products) => {
         products[0].img = "https://hotline.ua/img/tx/212/2124823045.jpg";
         products[1].img = "https://hotline.ua/img/tx/212/2124823045.jpg";
         this.setState({
-            products
-        })
+            products,
+        });
     }
 
-    renderItem = ()=>{
-        return this.state.products.map(item => {
-            return(
-                <ProductCard item={item} key={item.id}/>      
-            )            
-        })
+    addProducts = () => {
+        this.ShopService.addProducts();
+        this.ShopService.getProducts()
+            .then(this.isDataLoaded)
+            .catch();
     }
 
-    render(){
+    renderItem = () => {
+        return this.state.products.map((item) => {
+            return (
+                <ProductCard item={item} key={item.id}/>
+            );
+        });
+    }
 
-        const item = this.renderItem();
-
-        return(
+    render() {
+        return (
             <>
                 <Header/>
                 <main>
                     <section className="products">
                         <div className="container">
+                            <div className="add-products-button">
+                                <button className="btn" onClick={this.addProducts}>Добавить товары</button>
+                            </div>
                             <div className="products-wrapper">
-                                {item}
+                                {this.renderItem()}
                             </div>
                         </div>
                     </section>
                 </main>
             </>
-        )
-    };
-};
+        );
+    }
+}

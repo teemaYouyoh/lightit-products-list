@@ -1,71 +1,95 @@
-import React, {Component} from 'react';
-import ShopService from '../../services/ShopService';
-import Header from '../Header/Header';
-import './authorization.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import ShopService from "../../services/ShopService";
+import Header from "../Header/Header";
+import "./authorization.scss";
 
-export default class Registration extends Component{
-
+export default class Authorization extends Component {
     state = {
-        token: '',
+        token: "",
         user: {
-            username: '',
-            password: ''
-        }
+            username: "",
+            password: "",
+        },
+        warning: "",
     }
 
     ShopService = new ShopService();
 
-    loginUser = async ()=>{
-        if(this.state.user.username !== '' || this.state.user.password !== '') {
-            let user = this.state.user;
-            const token = await this.ShopService.loginUser(user);
-            
-            if(token !== undefined){
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('token', token);
+    loginUser = async () => {
+        if (this.state.user.username !== "" && this.state.user.password !== "") {
+            const { user } = this.state;
+            const { token } = await this.ShopService.loginUser(user);
+
+            if (token !== undefined) {
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("token", token);
+                this.props.history.push("/");
+            } else {
+                this.setState({
+                    warning: "Неверный логин или пароль!",
+                });
             }
-            this.props.history.push("/");
+        } else {
+            this.setState({
+                warning: "Заполните пустые поля!",
+            });
         }
-    };
+    }
 
-    registerUser = async ()=>{
-        if(this.state.user.username !== '' || this.state.user.password !== '') {
-            let user = this.state.user;
-            const token = await this.ShopService.registerUser(user);
+    registerUser = async () => {
+        if (this.state.user.username !== "" && this.state.user.password !== "") {
+            const { user } = this.state;
+            const { token } = await this.ShopService.registerUser(user);
 
-            localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('token', token);
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
             this.props.history.push("/");
+        } else {
+            this.setState({
+                warning: "Заполните пустые поля!",
+            });
         }
-    };
+    }
 
-    handleChange = (e)=>{
+    handleChange = (e) => {
         const input = e.target;
-        this.setState(prevState => ({
-            user : {
-                ...prevState.user,
-                [input.name]: input.value
-            }
-        }))
-    };
+        this.setState((prevState) => {
+            return {
+                user: {
+                    ...prevState.user,
+                    [input.name]: input.value,
+                },
+            };
+        });
+    }
 
-    render(){
-        return(
+    render() {
+        return (
             <>
-                <Header></Header>
-                <section className="authorization-form">
-                    <div className="container">
-                        <div className="authorization-wrapper">
-                            <input name="username" type="text" placeholder="Имя" onBlur={this.handleChange}/>
-                            <input name="password" type="password" placeholder="Пароль" onBlur={this.handleChange}/>
-                            <div className="buttons-form">
-                                <button onClick={this.loginUser}>Войти</button>
-                                <button onClick={this.registerUser}>Зарегистрироваться</button>
+                <Header/>
+                <main>
+                    <section className="authorization-form">
+                        <div className="container">
+                            <div className="authorization-wrapper">
+                                <input className="authorization__input input" name="username" type="text" placeholder="Имя" onBlur={this.handleChange}/>
+                                <input className="authorization__input input" name="password" type="password" placeholder="Пароль" onBlur={this.handleChange}/>
+                                <div className="buttons-form">
+                                    <button className="authorization__button btn" onClick={this.loginUser}>Войти</button>
+                                    <button className="authorization__button authorization__button_large btn" onClick={this.registerUser}>Зарегистрироваться</button>
+                                </div>
+                                <div className="authorization__warning">
+                                    {this.state.warning}
+                                </div>
                             </div>
-                        </div> 
-                    </div>
-                </section>                
+                        </div>
+                    </section>
+                </main>
             </>
-        )
+        );
     }
 }
+
+Authorization.propTypes = {
+    history: PropTypes.object,
+};

@@ -1,0 +1,23 @@
+.product-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    margin: 30px 20px 0;
+
+    .card__image{
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        img{
+            width: 200px;
+        }
+    }
+    
+    .card__title{
+        text-align: center;
+    }
+}
+

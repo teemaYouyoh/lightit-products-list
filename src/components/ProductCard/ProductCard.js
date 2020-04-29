@@ -1,13 +1,12 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import './product-card.css';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import "./product-card.scss";
 
-export default function ProductCard(props){
-    let {id, title, img} = props.item;
-    // if (img === "img1.png" || img === "img2.png") {                 //первые два товара выводятся без изображения
-    //     img = "https://hotline.ua/img/tx/212/2124823045.jpg";    //поэтому делаем замену ссылок на изображения
-    // }
-    return(
+export default function ProductCard(props) {
+    const { id, title, img } = props.item;
+
+    return (
         <div className="product-card">
             <div className="card__image">
                 <img src={img} alt=""/>
@@ -17,6 +16,10 @@ export default function ProductCard(props){
                     {title}
                 </Link>
             </div>
-        </div>  
-    )
+        </div>
+    );
 }
+
+ProductCard.propTypes = {
+    item: PropTypes.object,
+};

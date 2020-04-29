@@ -1,0 +1,13 @@
+.add-products-button{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 30px 15px 0px;
+}
+
+.products-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}

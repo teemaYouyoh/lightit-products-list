@@ -1,101 +1,95 @@
-import React, {Component} from 'react';
-import StarRatings from 'react-star-ratings';
-import ShopService from '../../services/ShopService';
-import Header from '../Header/Header';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import StarRatings from "react-star-ratings";
+import ShopService from "../../services/ShopService";
+import Header from "../Header/Header";
+import "./product-page.scss";
 
-import './product-page.css';
-
-
-export default class ProductPage extends Component{
-
+export default class ProductPage extends Component {
     state = {
         product: {},
         reviews: [],
         review: "",
         rate: 0,
-        warning: ""
+        warning: "",
     }
 
     ShopService = new ShopService();
 
-    componentDidMount(){
+    componentDidMount() {
         const { id } = this.props.match.params;
 
         this.ShopService.getProducts()
-        .then(this.onProductsLoaded)
-        .catch();
+            .then(this.onProductsLoaded)
+            .catch();
 
         this.ShopService.getReviews(id)
-        .then(this.onReviewsLoaded)
-        .catch();
+            .then(this.onReviewsLoaded)
+            .catch();
     }
 
-    onProductsLoaded = (products)=>{
+    onProductsLoaded = (products) => {
         const { id } = this.props.match.params;
-        // let product = {};
 
-        products.forEach(element => {
-            if(element.id == id){
-                if(element.id === 1 || element.id === 2){
+        products.forEach((element) => {
+            if (+element.id === +id) {
+                if (element.id === 1 || element.id === 2) {
                     element.img = "https://hotline.ua/img/tx/212/2124823045.jpg";
                 }
 
                 this.setState({
-                    product: element
-                })
+                    product: element,
+                });
             }
         });
     }
 
-    onReviewsLoaded = (reviews)=>{
-        reviews = reviews.reverse();
+    onReviewsLoaded = (data) => {
+        const reviews = data.reverse();
         this.setState({
-            reviews
-        })
-
-        console.log(this.state.reviews)
-    }
-
-    handleChange = (e)=>{
-        this.setState({
-            review: e.target.value
+            reviews,
         });
     }
 
-    handleClick = async ()=>{
+    handleChange = (e) => {
+        this.setState({
+            review: e.target.value,
+        });
+    }
+
+    handleClick = async () => {
         const { id } = this.props.match.params;
         const { review, rate } = this.state;
-        const token = localStorage.getItem('token');
-        console.log(token);
-        if(token === null){
+        const token = localStorage.getItem("token");
+        if (token === null) {
             this.setState({
-                warning: "Необходимо авторизироваться!"
-            })
-        } else if (review !== '' && rate !== 0) {
+                warning: "Необходимо авторизироваться!",
+            });
+        } else if (review !== "" && rate !== 0) {
             await this.ShopService.postReview(id, review, rate);
             this.ShopService.getReviews(id)
-            .then(this.onReviewsLoaded)
-            .catch();
+                .then(this.onReviewsLoaded)
+                .catch();
 
             this.setState({
-                warning: ""
-            })
+                warning: "",
+            });
         } else {
             this.setState({
-                warning: "Поставьте оценку или введите отзыв!"
-            })
-        }        
-    }    
+                warning: "Поставьте оценку или введите отзыв!",
+            });
+        }
+    }
 
-    changeRating = ( newRating, name )=>{
+    changeRating = (newRating) => {
         this.setState({
-            rate: newRating
+            rate: newRating,
         });
     }
 
-    renderItem = ()=>{
-        return this.state.reviews.map(item => {
-            return(
+    renderItem = () => {
+        return this.state.reviews.map((item) => {
+            return (
                 <div className="review" key={item.id}>
                     <div className="review__username">
                         {`${item.created_by.username} в ${item.created_at}`}
@@ -103,29 +97,26 @@ export default class ProductPage extends Component{
                     <div className="review__rate">Оценка: {item.rate}</div>
                     <div className="review__text">{item.text}</div>
                 </div>
-            )
-        })
+            );
+        });
     }
-    
-    render(){
-        const item = this.renderItem();
-        const {id, title, img, text} = this.state.product;
 
-        return(
+    render() {
+        const { title, img, text } = this.state.product;
+
+        return (
             <>
                 <Header/>
                 <main>
                     <section className="product">
                         <div className="container">
                             <div className="product-wrapper">
-                                <div className="product__image">
-                                    <img src={img} alt={title}/>
-                                </div>
+                                <img className="product__image" src={img} alt={title}/>
                                 <div className="product__information">
-                                    <h2 className="information__title">
+                                    <h2 className="product__title">
                                         {title}
                                     </h2>
-                                    <p className="information__text">
+                                    <p className="product__text">
                                         {text}
                                     </p>
                                 </div>
@@ -137,6 +128,7 @@ export default class ProductPage extends Component{
                         <div className="container">
                             <div className="reviews-wrapper">
                                 <div className="review-form">
+
                                     <StarRatings
                                         rating={this.state.rate}
                                         starRatedColor="orange"
@@ -145,14 +137,14 @@ export default class ProductPage extends Component{
                                         name='rating'
                                     />
                                     <textarea
-                                        className="review__textarea" 
-                                        type="text" 
-                                        placeholder="Оставьте свой отзыв..." 
+                                        className="review__textarea input"
+                                        type="text"
+                                        placeholder="Оставьте свой отзыв..."
                                         onBlur={this.handleChange}
                                     />
                                     <div className="review-button-form">
-                                        <button 
-                                            className="review__button" 
+                                        <button
+                                            className="review__button btn"
                                             onClick={this.handleClick}>
                                             Отправить отзыв
                                         </button>
@@ -160,15 +152,19 @@ export default class ProductPage extends Component{
                                             {this.state.warning}
                                         </span>
                                     </div>
-                                    
+
                                 </div>
                                 <h2 className="reviews__title">Отзывы</h2>
-                                {item}
+                                {this.renderItem()}
                             </div>
                         </div>
                     </section>
                 </main>
             </>
-        )
+        );
     }
 }
+
+ProductPage.propTypes = {
+    match: PropTypes.object,
+};
