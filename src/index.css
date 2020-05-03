@@ -34,17 +34,17 @@ a{
     border: 2px solid #39B3D7;
     border-radius: 4px;
     color: white;
-    transition: 0.2s;
+    transition: 0.2s box-shadow;
     outline: none;
     cursor: pointer;
+}
+
+.btn:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 .input{
     padding: 10px 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-
-.btn:hover{
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }

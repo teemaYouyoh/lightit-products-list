@@ -1,71 +1,73 @@
-import products from "../products.json";
+import products from '../products.json';
 
 export default class ShopService {
+    // функция для POST запросов
     postRequest = async (url, data = {}) => {
         let res;
         let headers = {};
-        const token = localStorage.getItem("token") ? localStorage.getItem("token") : null;
+        const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
 
         if (!token) {
             headers = {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             };
         } else {
             headers = {
                 Authorization: `Token ${token}`,
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             };
         }
 
         try {
             res = await fetch(`http://smktesting.herokuapp.com/api/${url}`, {
-                method: "POST",
+                method: 'POST',
                 body: JSON.stringify(data),
                 headers,
             });
             res = await res.json();
         } catch (err) {
-            throw new Error(`Could not fetch; ${res.status}`);
+            throw new Error(`Could not fetch; ${err}`);
         }
 
         return res;
     };
 
+    // функция для GET запросов
     getRequest = async (url) => {
         let res;
 
         try {
             res = await fetch(`http://smktesting.herokuapp.com/api/${url}`, {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
             });
             res = await res.json();
         } catch (err) {
-            throw new Error(`Could not fetch; ${res.status}`);
+            throw new Error(`Could not fetch; ${err}`);
         }
 
         return res;
     };
 
-    getUsers = async () => {
-        return this.getRequest("register");
+    loginUser = (data) => {
+        return this.postRequest('login/', data);
     }
 
-    registerUser = async (data) => {
-        return this.postRequest("register/", data);
+    registerUser = (data) => {
+        return this.postRequest('register/', data);
     }
 
-    loginUser = async (data) => {
-        return this.postRequest("login/", data);
+    getUsers = () => {
+        return this.getRequest('register');
     }
 
-    getProducts = async () => {
-        return this.getRequest("products/");
+    getProducts = () => {
+        return this.getRequest('products/');
     }
 
-    getReviews = async (id) => {
+    getReviews = (id) => {
         return this.getRequest(`reviews/${id}`);
     }
 
@@ -80,7 +82,7 @@ export default class ShopService {
     addProducts = () => {
         const data = products.products;
         data.forEach((element) => {
-            this.postRequest("products/", element);
+            this.postRequest('products/', element);
         });
     }
 }

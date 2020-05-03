@@ -1,0 +1,27 @@
+.reviews {
+
+    .reviews-wrapper {
+        display: flex;
+        flex-direction: column;    
+
+        @media only screen and (max-width: 1024px) {
+            align-items: center;
+        }
+
+        .review {
+            width: 700px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 5px 0;
+        
+            @media only screen and (max-width: 1024px) {
+                width: 500px;
+            }
+        
+            .review__username {
+                font-weight: bold;
+            }
+        }
+    }
+}

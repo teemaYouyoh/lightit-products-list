@@ -1,23 +1,25 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import ShopService from "../../services/ShopService";
-import "./header.scss";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
+import ShopService from '../../services/ShopService';
+
+import './header.scss';
 
 export default class Header extends Component {
     state = {
-        username: "",
+        username: '',
     }
 
     ShopService = new ShopService();
 
     componentDidMount() {
+        // получение имени авторизированного пользвателя для отображения в header
         this.getUsername();
     }
 
     getUsername = () => {
-        const user = localStorage.getItem("user");
+        const user = localStorage.getItem('user');
         const username = user ? JSON.parse(user).username : null;
-
         this.setState({
             username,
         });
@@ -26,17 +28,18 @@ export default class Header extends Component {
     signOut = () => {
         localStorage.clear();
         this.setState({
-            username: "",
+            username: '',
         });
     }
 
     render() {
-        let username;
+        let headerUsername;
+        const { username } = this.state;
 
-        if (this.state.username) {
-            username = <span onClick={this.signOut}>Выйти ({this.state.username})</span>;
+        if (username) {
+            headerUsername = <span onClick={this.signOut}>Выйти ({username})</span>;
         } else {
-            username = <Link to='/authorization'>Войти / Зарегитрироваться</Link>;
+            headerUsername = <Link to='/authorization'>Войти / Зарегитрироваться</Link>;
         }
 
         return (
@@ -44,7 +47,7 @@ export default class Header extends Component {
                 <div className="container">
                     <div className="header__wrapper">
                         <Link to="/">Магазин</Link>
-                        {username}
+                        {headerUsername}
                     </div>
                 </div>
             </header>

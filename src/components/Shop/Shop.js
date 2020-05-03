@@ -1,8 +1,10 @@
-import React, { Component } from "react";
-import ShopService from "../../services/ShopService";
-import Header from "../Header/Header";
-import ProductCard from "../ProductCard/ProductCard";
-import "./shop.scss";
+import React, { Component } from 'react';
+
+import ShopService from '../../services/ShopService';
+import Header from '../Header/Header';
+import ProductCard from '../ProductCard/ProductCard';
+
+import './shop.scss';
 
 export default class Shop extends Component {
     state = {
@@ -13,32 +15,35 @@ export default class Shop extends Component {
 
     componentDidMount() {
         this.ShopService.getProducts()
-            .then(this.isDataLoaded)
-            .catch();
+            .then(this.onDataLoaded)
+            .catch(this.onError);
     }
 
-    isDataLoaded = (products) => {
-        products[0].img = "https://hotline.ua/img/tx/212/2124823045.jpg";
-        products[1].img = "https://hotline.ua/img/tx/212/2124823045.jpg";
+    addProducts = async () => {
+        await this.ShopService.addProducts();
+        this.ShopService.getProducts()
+            .then(this.onDataLoaded)
+            .catch(this.onError);
+    }
+
+    onDataLoaded = (products) => {
+        // изменение ссылок на изображения товаров без изображений
+        products[0].img = `http://smktesting.herokuapp.com/static/${products[0].img}`;
+        products[1].img = `http://smktesting.herokuapp.com/static/${products[1].img}`;
         this.setState({
             products,
         });
     }
 
-    addProducts = () => {
-        this.ShopService.addProducts();
-        this.ShopService.getProducts()
-            .then(this.isDataLoaded)
-            .catch();
+    onError = (err) => {
+        console.error(err);
     }
 
     renderItem = () => {
         return this.state.products.map((item) => {
-            return (
-                <ProductCard item={item} key={item.id}/>
-            );
+            return <ProductCard item={item} key={item.id}/>;
         });
-    }
+    };
 
     render() {
         return (

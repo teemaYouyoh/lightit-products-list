@@ -24,16 +24,17 @@ module.exports = {
     ],
     "rules": {
         "semi": ["error", "always"],
-        "quotes": ["error", "double"],
+        "quotes": ["error", "single"],
         "no-unused-vars": [1],
         "brace-style": [2, '1tbs'],
         "indent": [2, 4],
+        "no-console": "off",
         "linebreak-style": ["error", "windows"],
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
         "no-self-assign": ["error", { "props": false }],
         "no-param-reassign": ["error", { "props": false }],
         "arrow-body-style": ["error", "always"],
-        "class-methods-use-this": ["error", { "exceptMethods": ["render"] }]
+        "class-methods-use-this": ["error", { "exceptMethods": ["render"] }],
     },
     "parser" : "babel-eslint"
 };

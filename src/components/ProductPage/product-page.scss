@@ -1,80 +1,50 @@
-.product{
+.review-form {
     margin-top: 50px;
 
-    .product-wrapper{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .product__image{
-            width: 500px;
-        }
-        
-        .product__information{
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            margin-left: 100px;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-    }
-}
-
-.reviews{
-    margin-top: 50px;
-
-    .reviews-wrapper{
+    .review-form-wrapper {
         display: flex;
         flex-direction: column;
-        
-        .review-form{
-            display: flex;
-            flex-direction: column;
 
-            .star-ratings .star-container{
-                padding-right: 0px !important;
-                padding-bottom: 10px;
-            }
-            
-            .star-ratings .star-container svg{
-                width: 25px !important;
-                height: 25px !important;
-            }
-            
-            .review__textarea{
-                width: 700px;
-                height: 100px;
-                resize: none;
-            }
-            
-            .review-button-form{
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                margin-top: 15px;
-
-                .review__button{
-                    width: 150px;
-                    margin-right: 15px;
-                }
-            }           
+        @media only screen and (max-width: 1024px) {
+            align-items: center;
         }
-        
-        .review{
-            width: 700px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px 15px;
-            margin: 5px 0;
 
-            .review__username{
-                font-weight: bold;
+        .star-ratings .star-container {
+            padding-right: 0px !important;
+            padding-bottom: 10px;
+        }
+
+        .star-ratings .star-container svg {
+            width: 25px !important;
+            height: 25px !important;
+        }
+
+        .review__textarea {
+            width: 700px;
+            height: 100px;
+            resize: none;
+
+            @media only screen and (max-width: 1024px) {
+                width: 500px;
             }
-        }        
+        }
+
+        .review-button-form {
+            width: 700px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 15px;
+
+            @media only screen and (max-width: 1024px) {
+                justify-content: center;
+            }
+
+            .review__button {
+                width: 150px;
+                margin-right: 15px;
+            }
+        }
     }
 }
-
-
-
-

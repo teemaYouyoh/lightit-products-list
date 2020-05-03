@@ -1,17 +1,21 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import StarRatings from "react-star-ratings";
-import ShopService from "../../services/ShopService";
-import Header from "../Header/Header";
-import "./product-page.scss";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import StarRatings from 'react-star-ratings';
+
+import ShopService from '../../services/ShopService';
+import Header from '../Header/Header';
+import ProductInfo from '../ProductInfo/ProductInfo';
+import ProductReviews from '../ProductReviews/ProductReviews';
+
+import './product-page.scss';
 
 export default class ProductPage extends Component {
     state = {
         product: {},
         reviews: [],
-        review: "",
+        review: '',
         rate: 0,
-        warning: "",
+        warning: '',
     }
 
     ShopService = new ShopService();
@@ -21,11 +25,11 @@ export default class ProductPage extends Component {
 
         this.ShopService.getProducts()
             .then(this.onProductsLoaded)
-            .catch();
+            .catch(this.onError);
 
         this.ShopService.getReviews(id)
             .then(this.onReviewsLoaded)
-            .catch();
+            .catch(this.onError);
     }
 
     onProductsLoaded = (products) => {
@@ -33,8 +37,9 @@ export default class ProductPage extends Component {
 
         products.forEach((element) => {
             if (+element.id === +id) {
+                // замена ссылок на изображения товаров без изображения
                 if (element.id === 1 || element.id === 2) {
-                    element.img = "https://hotline.ua/img/tx/212/2124823045.jpg";
+                    element.img = `http://smktesting.herokuapp.com/static/${element.img}`;
                 }
 
                 this.setState({
@@ -45,10 +50,14 @@ export default class ProductPage extends Component {
     }
 
     onReviewsLoaded = (data) => {
-        const reviews = data.reverse();
+        const reviews = data.reverse(); // сортировка: сначала новые комментарии
         this.setState({
             reviews,
         });
+    }
+
+    onError = (err) => {
+        console.error(err);
     }
 
     handleChange = (e) => {
@@ -60,105 +69,78 @@ export default class ProductPage extends Component {
     handleClick = async () => {
         const { id } = this.props.match.params;
         const { review, rate } = this.state;
-        const token = localStorage.getItem("token");
-        if (token === null) {
+        const token = localStorage.getItem('token');
+
+        if (token === null) { // проверка: авторизирован ли пользователя
             this.setState({
-                warning: "Необходимо авторизироваться!",
+                warning: 'Необходимо авторизироваться!',
             });
-        } else if (review !== "" && rate !== 0) {
+        } else if (review !== '' && rate !== 0) {
             await this.ShopService.postReview(id, review, rate);
+
             this.ShopService.getReviews(id)
                 .then(this.onReviewsLoaded)
-                .catch();
+                .catch(this.onError);
 
             this.setState({
-                warning: "",
+                review: '',
+                rate: 0,
+                warning: 'Отзыв успешно отправлен!',
             });
         } else {
             this.setState({
-                warning: "Поставьте оценку или введите отзыв!",
+                warning: 'Поставьте оценку или введите отзыв!',
             });
         }
     }
 
-    changeRating = (newRating) => {
+    changeRating = (rate) => {
         this.setState({
-            rate: newRating,
-        });
-    }
-
-    renderItem = () => {
-        return this.state.reviews.map((item) => {
-            return (
-                <div className="review" key={item.id}>
-                    <div className="review__username">
-                        {`${item.created_by.username} в ${item.created_at}`}
-                    </div>
-                    <div className="review__rate">Оценка: {item.rate}</div>
-                    <div className="review__text">{item.text}</div>
-                </div>
-            );
+            rate,
         });
     }
 
     render() {
-        const { title, img, text } = this.state.product;
+        const { product, reviews, warning } = this.state;
 
         return (
             <>
                 <Header/>
                 <main>
-                    <section className="product">
+                    <ProductInfo product={product}/>
+
+                    <section className="review-form">
                         <div className="container">
-                            <div className="product-wrapper">
-                                <img className="product__image" src={img} alt={title}/>
-                                <div className="product__information">
-                                    <h2 className="product__title">
-                                        {title}
-                                    </h2>
-                                    <p className="product__text">
-                                        {text}
-                                    </p>
+                            <div className="review-form-wrapper">
+                                <StarRatings
+                                    rating={this.state.rate}
+                                    starRatedColor="orange"
+                                    changeRating={this.changeRating}
+                                    numberOfStars={5}
+                                    name='rating'
+                                />
+                                <textarea
+                                    className="review__textarea input"
+                                    value={this.state.review}
+                                    type="text"
+                                    placeholder="Оставьте свой отзыв..."
+                                    onChange={this.handleChange}
+                                />
+                                <div className="review-button-form">
+                                    <button
+                                        className="review__button btn"
+                                        onClick={this.handleClick}>
+                                        Отправить отзыв
+                                    </button>
+                                    <span className="review__warning">
+                                        {warning}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <section className="reviews">
-                        <div className="container">
-                            <div className="reviews-wrapper">
-                                <div className="review-form">
-
-                                    <StarRatings
-                                        rating={this.state.rate}
-                                        starRatedColor="orange"
-                                        changeRating={this.changeRating}
-                                        numberOfStars={5}
-                                        name='rating'
-                                    />
-                                    <textarea
-                                        className="review__textarea input"
-                                        type="text"
-                                        placeholder="Оставьте свой отзыв..."
-                                        onBlur={this.handleChange}
-                                    />
-                                    <div className="review-button-form">
-                                        <button
-                                            className="review__button btn"
-                                            onClick={this.handleClick}>
-                                            Отправить отзыв
-                                        </button>
-                                        <span className="review__warning">
-                                            {this.state.warning}
-                                        </span>
-                                    </div>
-
-                                </div>
-                                <h2 className="reviews__title">Отзывы</h2>
-                                {this.renderItem()}
-                            </div>
-                        </div>
-                    </section>
+                    <ProductReviews reviews={reviews}/>
                 </main>
             </>
         );
@@ -167,4 +149,8 @@ export default class ProductPage extends Component {
 
 ProductPage.propTypes = {
     match: PropTypes.object,
+};
+
+ProductPage.defaultTypes = {
+    match: {},
 };
